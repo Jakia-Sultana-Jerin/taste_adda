@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "25871856649",
+    "project_id": "taste-adda",
+    "storage_bucket": "taste-adda.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25871856649:android:b8076d72e633f6dd0db4d8",
+        "android_client_info": {
+          "package_name": "com.example.taste_adda"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9gOTVV03ci-IXyrKb7K8MwzeqMpI4KNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

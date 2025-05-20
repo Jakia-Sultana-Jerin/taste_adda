@@ -9,11 +9,36 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  google_sign_in: ^6.3.0
+  dio: ^5.8.0+1
+  provider: ^6.1.5
+
+
 
 dev_dependencies:
+  icons_launcher: ^3.0.1
+  rename_app: ^1.6.3
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_native_splash: ^2.4.6
+
+icons_launcher:
+  image_path: "assets/images/icon.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
 
 flutter:
   uses-material-design: true
+  
+
+  assets:
+    - assets/images/recipelogofinal.png
+    - assets/images/icon.png
+    - assets/images/backgroundimage.jpeg
+    - assets/images/googlelogo1-removebg-preview.png
