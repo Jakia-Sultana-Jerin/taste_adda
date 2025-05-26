@@ -1,4 +1,4 @@
-package com.example.taste_adda
+package com.tasteadda
 
 import io.flutter.embedding.android.FlutterActivity
 

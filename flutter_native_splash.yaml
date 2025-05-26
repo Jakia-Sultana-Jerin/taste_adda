@@ -1,10 +1,10 @@
 flutter_native_splash:
-  color: "#42a5f5"
-  image: assets/images/recipelogofinal.png
+  color: "#080808"
+  image: assets/images/splash_image.png
 
   android_12:
-    color: "#42a5f5"
-    image: assets/images/recipelogofinal.png
+    color: "#080808"
+    image: assets/images/splash_image.png
 
   # Platform-specific settings
   android: true
