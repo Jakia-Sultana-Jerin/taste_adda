@@ -12,14 +12,14 @@ class RecipesView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Recipes")),
       body: FutureBuilder(
-        future: recipesViewModel.fetchRecipes(),
+        future: recipesViewModel.recipesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
           if (recipesViewModel.recipes.isEmpty) {
-            return const Center(child: Text("No recipes found"));
+            return const Center(child: Text("No recipes found", style: TextStyle(color: Colors.white),),);
           }
 
           final recipes = recipesViewModel.recipes;
