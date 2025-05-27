@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipes.dart';
 
@@ -23,7 +24,7 @@ class RecipesView extends StatelessWidget {
           }
 
           final recipes = recipesViewModel.recipes;
-          print("________________________________");
+ //         print("________________________________");
           print(recipes.length.toString());
 
           return ListView.builder(
@@ -36,7 +37,7 @@ class RecipesView extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/recipe-details');
+                        context.go('/recipe?id='+recipe.id);
                       },
                       child: Container(
                         padding: EdgeInsets.all(8),
@@ -57,7 +58,7 @@ class RecipesView extends StatelessWidget {
                         ),
                         Title(
                           color: Colors.black,
-                          child: Text(recipe.thumbUrl),
+                          child: Text(recipe.title),
                         ),
                       ],
                     ),

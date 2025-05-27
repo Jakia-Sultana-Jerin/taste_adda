@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taste_adda/view_models/recipe_details_view_model.dart';
-import 'package:taste_adda/view_models/Recipe_view_model.dart';
+import 'package:taste_adda/view_models/recipe.dart';
 
 class RecipeDetailsPage extends StatelessWidget {
-  const RecipeDetailsPage({super.key});
+  final String id;
+  const RecipeDetailsPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
-    final recipedetailsViewModel = Provider.of<RecipeDetailsViewModel>(context);
-    final recipe = recipedetailsViewModel.recipes;
+    final recipeViewModel = Provider.of<RecipeViewModel>(context);
 
+    print("...................................");
+    print(id);
     return Scaffold(
-      appBar: AppBar(title: Text("Recipes")),
+      body: FutureBuilder(
+        future: recipeViewModel.fetchRecipe(id: id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-      body: Container(
-        child: ListView.builder(
-          itemCount: recipe.length,
-          itemBuilder: (context, index) {
-            final recipes = recipe[index];
-            return Container(
-              child: Column(
-                children: [
-                  
-                ],
+          if (snapshot.hasData && recipeViewModel.recipe == null) {
+            return const Center(
+              child: Text(
+                "No recipe found",
+                style: TextStyle(color: Colors.white),
               ),
             );
-          },
-        ),
+          }
+
+          return Column(
+            children: [Image.network(recipeViewModel.recipe!.thumbUrl)],
+          );
+        },
       ),
     );
   }

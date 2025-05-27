@@ -1,4 +1,3 @@
-import 'package:taste_adda/models/user_model.dart';
 
 class ReviewModel {
   final String id;

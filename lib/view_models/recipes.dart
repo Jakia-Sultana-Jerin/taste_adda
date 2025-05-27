@@ -12,7 +12,7 @@ class RecipesViewModel extends ChangeNotifier {
 
   Future<void> fetchRecipes() async {
     try {
-      final response = await _dio.get("https://api.npoint.io/416d7e3a1b58126c480f");
+      final response = await _dio.get("https://api.npoint.io/3be1b04256d85515a067");
       if (response.statusCode == 200 && response.data['error'] == false) {
         final List<dynamic> dataList = response.data['data'];
         _recipes = dataList.map((json) => RecipeModel.fromJson(json)).toList();

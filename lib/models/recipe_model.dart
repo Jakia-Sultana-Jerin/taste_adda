@@ -1,6 +1,7 @@
 import 'package:taste_adda/models/review_model.dart';
 
 class RecipeModel {
+  final String id;
   final String title;
   final String description;
   final String thumbUrl;
@@ -10,6 +11,7 @@ class RecipeModel {
   final List<ReviewModel> reviews;
 
   RecipeModel({
+    required this.id,
     required this.title,
     required this.description,
     required this.thumbUrl,
@@ -18,20 +20,20 @@ class RecipeModel {
     required this.category,
     required this.reviews,
   });
-  
 
-factory RecipeModel.fromJson(Map<String, dynamic> json) {
+  factory RecipeModel.fromJson(Map<String, dynamic> json) {
     return RecipeModel(
+      id: json['id'],
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       thumbUrl: json['thumbUrl'] ?? '',
       ingredients: Map<String, String>.from(json['ingredients'] ?? {}),
       steps: List<String>.from(json['steps'] ?? []),
       category: json['category'] ?? '',
-      reviews: (json['reviews'] as List<dynamic>? ?? [])
-          .map((review) => ReviewModel.fromJson(review))
-          .toList(),
+      reviews:
+          (json['reviews'] as List<dynamic>? ?? [])
+              .map((review) => ReviewModel.fromJson(review))
+              .toList(),
     );
   }
-  
 }
