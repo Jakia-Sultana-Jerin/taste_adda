@@ -10,7 +10,6 @@ class RecipeDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final recipeViewModel = Provider.of<RecipeViewModel>(context);
 
-    print("...................................");
     print(id);
     return Scaffold(
       body: FutureBuilder(
@@ -20,7 +19,17 @@ class RecipeDetailsPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasData && recipeViewModel.recipe == null) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Error loading recipe",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          // Check if recipe is null
+          if (recipeViewModel.recipe == null) {
             return const Center(
               child: Text(
                 "No recipe found",

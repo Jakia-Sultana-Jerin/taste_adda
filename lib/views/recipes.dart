@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipes.dart';
 
@@ -20,52 +21,96 @@ class RecipesView extends StatelessWidget {
           }
 
           if (recipesViewModel.recipes.isEmpty) {
-            return const Center(child: Text("No recipes found", style: TextStyle(color: Colors.white),),);
+            return const Center(
+              child: Text(
+                "No recipes found",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
           }
 
           final recipes = recipesViewModel.recipes;
- //         print("________________________________");
-          print(recipes.length.toString());
 
-          return ListView.builder(
-            itemCount: recipes.length,
-            itemBuilder: (context, index) {
-              final recipe = recipes[index];
-              return Card(
-                margin: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        context.go('/recipe?id='+recipe.id);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Image.network(
-                          recipe.thumbUrl,
-                          fit: BoxFit.cover,
-                          width: 300,
-                          height: 250,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      spacing: 10,
+          return LiquidPullToRefresh(
+            showChildOpacityTransition: false,
+            color: const Color.fromARGB(255, 255, 144, 64),
+            backgroundColor: Colors.black,
+            height: 150,
+            animSpeedFactor: 5,
+            onRefresh: recipesViewModel.fetchRecipes,
+            child: ListView.separated(
+              padding: EdgeInsets.all(10),
+              itemCount: recipes.length,
+              separatorBuilder: (context, index) => SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                return Padding(
+                  padding: EdgeInsets.zero,
+                  child: Card(
+                    margin: EdgeInsets.zero,
+
+                    child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundImage: NetworkImage(recipe.thumbUrl),
+                        GestureDetector(
+                          onTap: () {
+                            context.go('/recipe?id=${recipe.id}');
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            child: AspectRatio(
+                              aspectRatio: 16/9,
+                              child: Image.network(
+                                recipe.thumbUrl,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            ),
+                          ),
                         ),
-                        Title(
-                          color: Colors.black,
-                          child: Text(recipe.title),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(recipe.thumbUrl),
+                              ),
+                              const SizedBox(
+                                width: 9,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      recipe.title,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      recipe.description,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              );
-            },
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
