@@ -6,9 +6,21 @@ import 'package:taste_adda/views/new_recipe.dart';
 import 'package:taste_adda/views/recipe_details.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taste_adda/views/recipes.dart';
+import 'package:forui/forui.dart';
+
 // import 'package:taste_adda/views/recipe_details.dart';
 
+import 'package:flutter/services.dart';
+
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -42,7 +54,7 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: 'new',
+          path: 'new-recipe',
           builder: (BuildContext context, GoRouterState state) {
             return const NewRecipePage();
           },
@@ -57,16 +69,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FThemes.zinc.dark; // Or your custom theme
+
     return MaterialApp.router(
-      // home: RecipesView(),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFF080808), // Background for all pages
-        primaryColor: Color(0xFF080808), // Primary color
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: Color(0xFF080808),
-        ),
-      ),
+      theme: theme.toApproximateMaterialTheme(),
+      localizationsDelegates: FLocalizations.localizationsDelegates,
+      supportedLocales: FLocalizations.supportedLocales,
+      builder: (_, child) => FTheme(data: theme, child: child!),
       routerConfig: _router,
     );
   }
