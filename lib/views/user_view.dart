@@ -37,6 +37,7 @@ class RecipeDetailsPage extends StatelessWidget {
               ),
             );
           }
+          
 
           return Column(
             children: [Image.network(recipeViewModel.recipe!.thumbUrl)],

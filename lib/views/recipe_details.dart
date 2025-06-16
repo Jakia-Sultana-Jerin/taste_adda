@@ -1,10 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipe.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:forui/forui.dart';
+import 'package:taste_adda/view_models/review.dart';
+import 'package:taste_adda/view_models/user_view_model.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class RecipeDetailsPage extends StatelessWidget {
   final String id;
@@ -17,12 +19,45 @@ class RecipeDetailsPage extends StatelessWidget {
       context,
       listen: false,
     );
+    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    final reviewViewModel = Provider.of<ReviewViewModel>(
+      context,
+      listen: false,
+    );
+    final ValueNotifier<bool> isDescriptionExpanded = ValueNotifier(false);
+    var isexpanded = isDescriptionExpanded.value;
+
+    //Description Dialog
+    // showDialog(
+    //   context: context,
+    //   builder:
+    //       (context) => AlertDialog(
+    //         backgroundColor: Colors.black,
+
+    //         content: Text(
+    //           recipeViewModel.recipe!.description,
+    //           style: TextStyle(color: Colors.white),
+    //         ),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () => Navigator.pop(context),
+    //             child: Text("close", style: TextStyle(color: Colors.white)),
+    //           ),
+    //         ],
+    //       ),
+    // );
+
+    //User Account Details
 
     print(id);
     return SafeArea(
       child: Scaffold(
         body: FutureBuilder<void>(
-          future: recipeViewModel.fetchRecipe(id: id),
+          future: Future.wait([
+            recipeViewModel.fetchRecipe(id: id),
+            userViewModel.fetchUser(id: '1'),
+            reviewViewModel.reviewFuture,
+          ]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -48,186 +83,271 @@ class RecipeDetailsPage extends StatelessWidget {
               );
             }
 
+            if (userViewModel.user == null) {
+              return const Center(
+                child: Text(
+                  "No user found",
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
+
+            if (reviewViewModel.review.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No reviews found",
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
+            final review = reviewViewModel.review;
+
             return SingleChildScrollView(
               child: Column(
-                //    mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SafeArea(
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Image.network(
-                        recipeViewModel.recipe!.thumbUrl,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      recipeViewModel.recipe!.thumbUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(
-                            recipeViewModel.recipe!.thumbUrl,
+
+                  // Recipe title and thumbnail
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 8,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.go('/userprofile');
+                          },
+                          child: CircleAvatar(
+                            radius: 20,
+                            child: ClipOval(
+                              child: Image.network(
+                                userViewModel.user!.profilePicture,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
 
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              recipeViewModel.recipe!.description,
+                        Expanded(
+                          child: GestureDetector(
+                              onTap: () {
+                            context.go('/userprofile');
+                          },
+                            child: Text(
+                              recipeViewModel.recipe!.title,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
-                              maxLines: 1,
-                              //  overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (context) => AlertDialog(
-                                    backgroundColor: Colors.black,
-                                    title: Title(
-                                      color: Colors.white,
-                                      child: Text(
-                                        'Description of  ${recipeViewModel.recipe!.title}',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                    content: Text(
-                                      recipeViewModel.recipe!.description,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text(
-                                          "close",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                            );
-                          },
-                          icon: Icon(Icons.more_horiz, color: Colors.white),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                  FDivider(
+                    style: FDividerStyle(
+                      color:
+                          FTheme.of(
+                            context,
+                          ).dividerStyles.horizontalStyle.color,
+                      padding: EdgeInsets.zero,
+                    ),
                   ),
 
+                  ///Recipe-Description
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 50),
-                    child: FButton(
-                      style: FButtonStyle.ghost,
-                     
-                      child: const Text('Category',style:TextStyle.new(color: Colors.white)),
-                      onPress: () {
-                        showFSheet(
-                          context: context,
-                          useRootNavigator: true,
-                          useSafeArea: true,
-                          side: FLayout.ttb,
-                                     //       transitionAnimationController: AnimationController(duration: Duration(seconds: 2),vsync:,
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                recipeViewModel.recipe!.category,
-                                style: TextStyle(color:Colors.white,fontSize: 20,fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.all(8.0),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final text = recipeViewModel.recipe!.description;
+                        final textSpan = TextSpan(
+                          text: text,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
+                        );
+
+                        final tp = TextPainter(
+                          text: textSpan,
+                          maxLines: 3,
+                          textDirection: TextDirection.ltr,
+                        );
+
+                        tp.layout(maxWidth: constraints.maxWidth);
+                        final isOverflow = tp.didExceedMaxLines;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              text,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
                               ),
-                            );
-                          },
+                              maxLines: isexpanded ? null : 3,
+                              overflow:
+                                  isexpanded
+                                      ? TextOverflow.visible
+                                      : TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                            ),
+                            if (isOverflow)
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) => AlertDialog(
+                                          backgroundColor: Colors.black,
+                                          content: Text(
+                                            text,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed:
+                                                  () => Navigator.pop(context),
+                                              child: const Text(
+                                                "close",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                  );
+                                },
+                                child: const Text(
+                                  'See more',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                          ],
                         );
                       },
                     ),
                   ),
 
-                  SizedBox(
-                    // width:5,
+                  FDivider(
+                    style: FDividerStyle(
+                      color:
+                          FTheme.of(
+                            context,
+                          ).dividerStyles.horizontalStyle.color,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+
+                  ///Category
+                  ///
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        FBadge(
+                          style: FBadgeStyle(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7),
+                              color: Colors.orangeAccent,
+                            ),
+                            contentStyle: FBadgeContentStyle(
+                              labelTextStyle: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                          child: Text(recipeViewModel.recipe!.category),
+                        ),
+                      ],
+                    ),
+                  ),
+                  FDivider(
+                    style: FDividerStyle(
+                      color:
+                          FTheme.of(
+                            context,
+                          ).dividerStyles.horizontalStyle.color,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                  ////
+                  ///
+                  ///
+                  ///ingredients and steps
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: FTabs(
                       children: [
                         FTabEntry(
                           label: const Text('Ingredients'),
-                          child: FCard(
-                            title: const Text('Ingredients'),
-
-                            subtitle: const Text(
-                              "The necessary ingredients are given here for making this recipe.",
-                            ),
-                            child: SizedBox(
-                              height: 500,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: ListView.builder(
-                                  padding: EdgeInsets.all(8.0),
-                                  itemCount:
-                                      recipeViewModel
-                                          .recipe!
-                                          .ingredients
-                                          .length,
-                                  itemBuilder: (context, index) {
-                                    final ingredientName = recipeViewModel
+                          child: FTileGroup(
+                            // label: const Text('Ingredients'),
+                            children: List.generate(
+                              recipeViewModel.recipe!.ingredients.length,
+                              (index) {
+                                final ingredientName = recipeViewModel
+                                    .recipe!
+                                    .ingredients
+                                    .keys
+                                    .elementAt(index);
+                                final ingredientValue =
+                                    recipeViewModel
                                         .recipe!
-                                        .ingredients
-                                        .keys
-                                        .elementAt(index);
-                                    final ingredientValue =
-                                        recipeViewModel
-                                            .recipe!
-                                            .ingredients[ingredientName];
+                                        .ingredients[ingredientName];
 
-                                    return Text(
-                                      "$ingredientName: $ingredientValue",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                return FTile(
+                                  title: Text(ingredientName, maxLines: 2),
+                                  details: Text(ingredientValue),
+                                  prefixIcon: Icon(
+                                    LucideIcons.circleDot,
+                                    color: Colors.orangeAccent,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
                         FTabEntry(
                           label: const Text('Steps'),
                           child: FCard(
-                            title: const Text('Steps'),
-                            subtitle: const Text(
-                              'Follow the cooking steps below to prepare the dish perfectly.',
-                            ),
-                            child: SizedBox(
-                              height: 500,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: ListView.builder(
-                                  padding: EdgeInsets.all(8.0),
-                                  itemCount:
-                                      recipeViewModel.recipe!.steps.length,
-                                  itemBuilder: (context, index) {
-                                    return Text(
-                                      "${index + 1}. ${recipeViewModel.recipe!.steps[index]}",
+                            child: FAccordion(
+                              controller: FAccordionController(max: 2),
+                              children: List.generate(
+                                recipeViewModel.recipe!.steps.length,
+                                (index) {
+                                  final step =
+                                      recipeViewModel.recipe!.steps[index];
+                                  return FAccordionItem(
+                                    title: Text(
+                                      'Step ${index + 1}',
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
+                                        color: Colors.orangeAccent,
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                    child: Text(
+                                      step,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ),
@@ -235,47 +355,122 @@ class RecipeDetailsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                
 
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: FButton(
-                        style: FButtonStyle.primary,
-                        intrinsicWidth: true,
-                        onPress: () => showAdaptiveDialog(
-                          context: context,
-                          builder: (context) => FDialog(
-                            direction: Axis.horizontal,
-                            title: const Text('Was it easy to follow? How did it taste?'),
-                            body: const Text('Did you enjoy making this recipe? Please,drop your feedback below.Your feedback helps us improve our recipes.'),
-                            actions: [
-                              FButton(style: FButtonStyle.outline, onPress: (){}, child: const Text('Cancel')),
-                              FButton(onPress: (){}, child: const Text('Submit Feedback')),
-                            ],
-                          ),
-                        ),
-                        child: const Text('Leave a quick review!'),
-                      ),
+                  ////Review Section
+                  FDivider(
+                    style: FDividerStyle(
+                      color:
+                          FTheme.of(
+                            context,
+                          ).dividerStyles.horizontalStyle.color,
+                      padding: EdgeInsets.zero,
                     ),
-                  ],
-                )
+                  ),
 
-
-                  // Text(
-                  //   recipeViewModel.recipe!.title,
-                  //   style: TextStyle(fontSize: 20, color: Colors.white),
-
-                  // ),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(15.0),
-                  //   child: Text(
-                  //     recipeViewModel.recipe!.description,
-                  //     style: TextStyle(fontSize: 20, color: Colors.white),
+                  // FButton(
+                  //   onPress: () {
+                  //     context.go('/review');
+                  //   },
+                  //   child: const Text(
+                  //     'Check Out the Reviews!',
+                  //     style: TextStyle(color: Colors.black),
                   //   ),
                   // ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FTileGroup(
+                      children: List.generate(
+                        reviewViewModel.review.length,
+                        (index) {
+                          final review = reviewViewModel.review[index];
+                          return FTile(
+                            title: Text(
+                              review.user,
+                              style: TextStyle(
+                                color: Colors.orangeAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              review.description,
+                              maxLines: isexpanded ? null : 10,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            prefixIcon: CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(
+                                review.profilepic,
+                              ),
+                            ),
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RatingBarIndicator(
+                                  rating: double.parse(review.rating),
+                                  itemBuilder:
+                                      (context, index) => Icon(
+                                        LucideIcons.star,
+                                        color: Colors.orangeAccent,
+                                      ),
+                                  itemCount: 5,
+                                  itemSize: 15.0,
+                                  direction: Axis.horizontal,
+                                ),
+                                // Icon(
+                                //   LucideIcons.star,
+                                //   color: Colors.yellowAccent,
+                                // ),
+                                //  Text(review.rating),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: FButton(
+                          style: FButtonStyle.primary,
+                          intrinsicWidth: true,
+                          onPress:
+                              () => showAdaptiveDialog(
+                                context: context,
+                                builder:
+                                    (context) => FDialog(
+                                      direction: Axis.vertical,
+                                      title: const Text(
+                                        'Was it easy to follow? How did it taste?',
+                                      ),
+                                      body: const Text(
+                                        'Did you enjoy making this recipe? Please,drop your feedback below.Your feedback helps us improve our recipes.',
+                                      ),
+                                      actions: [
+                                        FButton(
+                                          onPress: () {},
+                                          child: const Text(
+                                            'Submit Feedback',
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                        ),
+                                        FButton(
+                                          style: FButtonStyle.outline,
+                                          onPress: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                      ],
+                                    ),
+                              ),
+                          child: const Text('Leave a quick review!'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             );

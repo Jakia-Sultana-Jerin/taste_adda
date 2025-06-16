@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipes.dart';
-
+import 'package:taste_adda/view_models/user_view_model.dart';
 
 class RecipesView extends StatelessWidget {
   const RecipesView({super.key});
@@ -11,6 +12,7 @@ class RecipesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recipesViewModel = Provider.of<RecipesViewModel>(context);
+    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
 
     return SafeArea(
       child: Scaffold(
@@ -35,23 +37,30 @@ class RecipesView extends StatelessWidget {
                     style: TextStyle(color: Color.fromARGB(255, 255, 144, 64)),
                   ),
                   actions: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.notifications, color: Colors.white),
-                    ),
+                    // IconButton(
+                    //   onPressed: () {},
+                    //   icon: Icon(Icons.notifications, color: Colors.white),
+                    // ),
                     IconButton(
                       onPressed: () {},
                       icon: Icon(Icons.search, color: Colors.white),
                     ),
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.menu, color: Colors.white),
+                      onPressed: () {
+                        context.go('/setting');
+                      },
+                      icon: Icon(LucideIcons.settings, color: Colors.white),
                     ),
                   ],
                 ),
               ],
           body: FutureBuilder(
-            future: recipesViewModel.recipesFuture,
+            future:Future.wait([
+              recipesViewModel.recipesFuture,
+              userViewModel.fetchUser(id: '1')
+
+            ]
+            ) ,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -65,6 +74,14 @@ class RecipesView extends StatelessWidget {
                   ),
                 );
               }
+              if (userViewModel.user == null) {
+              return const Center(
+                child: Text(
+                  "No user found",
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
 
               final recipes = recipesViewModel.recipes;
 
@@ -114,7 +131,7 @@ class RecipesView extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 20,
                                     backgroundImage: NetworkImage(
-                                      recipe.thumbUrl,
+                                      userViewModel.user!.profilePicture,
                                     ),
                                   ),
                                   const SizedBox(width: 9),
@@ -161,6 +178,8 @@ class RecipesView extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 255, 144, 64),
           child: Icon(Icons.food_bank_outlined),
         ),
+
+       
       ),
     );
   }
