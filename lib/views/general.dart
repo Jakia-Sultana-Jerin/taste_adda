@@ -80,7 +80,7 @@ class _generalPagestate extends State<generalPage> {
                     ),
                   ],
                 ),
-              
+             
              
                 FSelectMenuTile(
                   selectController: languageController,
@@ -100,8 +100,8 @@ class _generalPagestate extends State<generalPage> {
                             }),
                   ),
                   menu: [
-                    FSelectTile(title: const Text('English'), value: Language.a),
-                    FSelectTile(title: const Text('Bangla'), value: Language.b),
+                    FSelectTile(title: const Text('Bangla'), value: Language.a),
+                    FSelectTile(title: const Text('English'), value: Language.b),
                   ],
                 ),
 

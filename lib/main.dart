@@ -1,12 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipe.dart';
 import 'package:taste_adda/view_models/recipes.dart';
 import 'package:taste_adda/view_models/review.dart';
+import 'package:taste_adda/view_models/sign_in_view_model.dart';
 import 'package:taste_adda/view_models/user_view_model.dart';
+import 'package:taste_adda/views/about.dart';
 import 'package:taste_adda/views/general.dart';
 import 'package:taste_adda/views/new_recipe.dart';
+import 'package:taste_adda/views/notification.dart';
+import 'package:taste_adda/views/privacy_policy.dart';
 import 'package:taste_adda/views/profile.dart';
 
 import 'package:taste_adda/views/recipe_details.dart';
@@ -20,6 +25,7 @@ import 'package:forui/forui.dart';
 
 import 'package:flutter/services.dart';
 import 'package:taste_adda/views/setting.dart';
+import 'package:taste_adda/views/sign_in.dart';
 import 'package:taste_adda/views/user_profile.dart';
 
 
@@ -27,8 +33,14 @@ import 'package:taste_adda/views/user_profile.dart';
 
 
 
-void main() {
+void main() async  {
   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
+
+  
+  await Firebase.initializeApp();
+ 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
@@ -43,6 +55,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => RecipeViewModel()),
          ChangeNotifierProvider(create: (_) => UserViewModel()),
           ChangeNotifierProvider(create: (_) => ReviewViewModel()),
+           ChangeNotifierProvider(create: (_) => SignInViewModel()),
       ],
       child: MainApp(),
     ),
@@ -62,7 +75,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const RecipesView();
+        return SignInPage();
       },
       routes: <RouteBase>[
         GoRoute(
@@ -78,10 +91,13 @@ final GoRouter _router = GoRouter(
             return RecipeDetailsPage(id: recipeId);
           },
         ),
+
+        
+
         GoRoute(
           path: 'new-recipe',
           builder: (BuildContext context, GoRouterState state) {
-            return const NewRecipePage();
+           return  NewRecipe();
           },
         ),
           GoRoute(
@@ -91,12 +107,22 @@ final GoRouter _router = GoRouter(
           },
         ),
 
-        //  GoRoute(
-        //   path: 'recipe-setting',
-        //   builder: (BuildContext context, GoRouterState state) {
-        //     return RecipeSetting  ();
-        //   },
-        // ),
+         GoRoute(
+          path: 'recipes',
+          builder: (BuildContext context, GoRouterState state) {
+            return RecipesView  ();
+          },
+        ),
+          
+              GoRoute(
+          path: '/recipes/:id',
+             name: 'RecipeDetailsPage',
+          builder: (BuildContext context, GoRouterState state) {
+               final id = state.pathParameters['id']!;      // '15', '7', …
+                 return RecipeDetailsPage(id: id);
+            
+          },
+        ),
 
            GoRoute(
           path: 'general-setting',
@@ -117,6 +143,25 @@ final GoRouter _router = GoRouter(
             return ProfilePage  ();
           },
         ),
+         GoRoute(
+          path: 'notification-setting',
+          builder: (BuildContext context, GoRouterState state) {
+            return NotificationPage ();
+          },
+        ),
+          GoRoute(
+          path: 'privacy-policy',
+          builder: (BuildContext context, GoRouterState state) {
+            return PrivacyPolicyPage ();
+          },
+        ),
+         GoRoute(
+          path: 'about',
+          builder: (BuildContext context, GoRouterState state) {
+           return  AboutPage();
+          },
+        ),
+          
       ],
     ),
   ],

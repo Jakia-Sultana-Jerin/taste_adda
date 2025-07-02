@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipes.dart';
+import 'package:taste_adda/view_models/sign_in_view_model.dart';
 import 'package:taste_adda/view_models/user_view_model.dart';
 
-class RecipesView extends StatelessWidget {
+class RecipesView extends StatefulWidget {
   const RecipesView({super.key});
+  @override
+  State<RecipesView> createState() => _RecipesViewState();
+}
 
+class _RecipesViewState extends State<RecipesView> {
   @override
   Widget build(BuildContext context) {
     final recipesViewModel = Provider.of<RecipesViewModel>(context);
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-
+   final signInViewModel = Provider.of<SignInViewModel>(context, listen: false);
+   // Get the existing SignInViewModel from the provider
+    final signInVM = context.read<SignInViewModel>();
     return SafeArea(
       child: Scaffold(
         body: NestedScrollView(
@@ -41,13 +49,13 @@ class RecipesView extends StatelessWidget {
                     //   onPressed: () {},
                     //   icon: Icon(Icons.notifications, color: Colors.white),
                     // ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.search, color: Colors.white),
-                    ),
+                    // IconButton(
+                    //   onPressed: () {},
+                    //   icon: Icon(Icons.search, color: Colors.white),
+                    // ),
                     IconButton(
                       onPressed: () {
-                        context.go('/setting');
+                        context.push('/setting');
                       },
                       icon: Icon(LucideIcons.settings, color: Colors.white),
                     ),
@@ -55,18 +63,17 @@ class RecipesView extends StatelessWidget {
                 ),
               ],
           body: FutureBuilder(
-            future:Future.wait([
+            future: Future.wait([
               recipesViewModel.recipesFuture,
-              userViewModel.fetchUser(id: '1')
-
-            ]
-            ) ,
+              userViewModel.fetchUser(signInViewModel.idToken!),
+            ]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
 
               if (recipesViewModel.recipes.isEmpty) {
+                print("recipes length: ${recipesViewModel.recipes.length}");
                 return const Center(
                   child: Text(
                     "No recipes found",
@@ -75,14 +82,14 @@ class RecipesView extends StatelessWidget {
                 );
               }
               if (userViewModel.user == null) {
-              return const Center(
-                child: Text(
-                  "No user found",
-                  style: TextStyle(color: Colors.white),
-                ),
-              );
-            }
-
+                return const Center(
+                  child: Text(
+                    "No user found",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              }
+              //        final recipeVM = context.watch<RecipesViewModel>();
               final recipes = recipesViewModel.recipes;
 
               return LiquidPullToRefresh(
@@ -98,6 +105,7 @@ class RecipesView extends StatelessWidget {
                   separatorBuilder: (context, index) => SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final recipe = recipes[index];
+                    print('Recipe thumbUrl: ${recipe.thumbUrl}');
                     return Padding(
                       padding: EdgeInsets.zero,
                       child: Card(
@@ -107,17 +115,18 @@ class RecipesView extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                context.go('/recipe?id=${recipe.id}');
+                                context.push('/recipes/${recipe.id}');
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10),
                                 ),
+
                                 child: AspectRatio(
                                   aspectRatio: 16 / 9,
                                   child: Image.network(
-                                    recipe.thumbUrl,
+                                    Uri.encodeFull(recipe.thumbUrl),
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),
@@ -160,6 +169,68 @@ class RecipesView extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            FDivider(
+                              style: FDividerStyle(
+                                color:
+                                    FTheme.of(
+                                      context,
+                                    ).dividerStyles.horizontalStyle.color,
+                                padding: EdgeInsets.zero,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.zero,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    onPressed: () async {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (context) => AlertDialog(
+                                              backgroundColor: Colors.black,
+                                              content: Text(
+                                                "Are you sure to delete this recipe?",
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed:
+                                                      () => Navigator.pop(
+                                                        context,
+                                                      ),
+                                                  child: const Text(
+                                                    "No",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    await recipesViewModel
+                                                        .deleteRecipe(
+                                                          recipe.id,
+                                                         signInViewModel
+                                                        );
+                                                    setState(() {
+                                                      recipes.removeAt(
+                                                        index,
+                                                      ); // Remove from UI list
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Yes"),
+                                                ),
+                                              ],
+                                            ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -172,14 +243,12 @@ class RecipesView extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            context.go('/new-recipe');
+            context.push('/new-recipe');
           },
           shape: CircleBorder(),
           backgroundColor: const Color.fromARGB(255, 255, 144, 64),
           child: Icon(Icons.food_bank_outlined),
         ),
-
-       
       ),
     );
   }

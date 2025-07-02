@@ -43,21 +43,26 @@ class SignInPage extends StatelessWidget {
                       onPressed: null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            Image.asset(
-                              "assets/images/google_icon.png",
-                              height: 30,
-                            ),
-                            Text(
-                              "Sign In with Google",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                        child: GestureDetector(
+                          onTap: () async {
+                            await signInViewModel.handleSignIn(context);
+                          },
+                          child: Row(
+                            spacing: 10,
+                            children: [
+                              Image.asset(
+                                "assets/images/google_icon.png",
+                                height: 30,
                               ),
-                            ),
-                          ],
+                              Text(
+                                "Sign In with Google",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

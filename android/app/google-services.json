@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:25871856649:android:b8076d72e633f6dd0db4d8",
+        "mobilesdk_app_id": "1:25871856649:android:716e19d14f4fe4ec0db4d8",
         "android_client_info": {
           "package_name": "com.tasteadda"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "25871856649-eci642d6om3309tfr3rprt73bf190qfs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tasteadda",
+            "certificate_hash": "34fe6d718dcef6af614787fd585b3c673858973b"
+          }
+        },
+        {
+          "client_id": "25871856649-h8sfqa3evpn60f7scm8chmsm29kslelh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB9gOTVV03ci-IXyrKb7K8MwzeqMpI4KNk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "25871856649-h8sfqa3evpn60f7scm8chmsm29kslelh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

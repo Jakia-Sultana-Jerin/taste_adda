@@ -23,7 +23,9 @@ class RecipeModel {
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
     return RecipeModel(
-       id: json['id']?.toString() ?? '',
+      
+    //  id: json['id']?.toString() ?? '',
+      id: json['id'] ?? json['_id'] ?? '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       thumbUrl: json['thumbUrl'] ?? '',

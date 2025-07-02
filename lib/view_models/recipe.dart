@@ -1,34 +1,44 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:taste_adda/models/recipe_model.dart';
 
 class RecipeViewModel extends ChangeNotifier {
-  final Dio _dio = Dio();
-  RecipeModel? _recipe;
-  // Future<void>? _recipeFuture;
+  late final Dio _dio;
+  final baseUrl =
+      kIsWeb
+          ? 'https://dingo-proper-mistakenly.ngrok-free.app/'
+          : 'https://dingo-proper-mistakenly.ngrok-free.app/';
 
+  RecipeViewModel() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 300),
+        receiveTimeout: const Duration(seconds: 300),
+      ),
+    );
+  }
+
+  RecipeModel? _recipe;
   RecipeModel? get recipe => _recipe;
 
-  // You can initialize this with a specific id when needed
-  Future<void> fetchRecipe({required String id}) async {
+  Future<void> fetchRecipe({required id}) async {
     try {
-      final response = await _dio.get("https://api.npoint.io/3be1b04256d85515a067?recipe=$id");
+      final response = await _dio.get("/recipes/$id");
+
+      print("STATUS: ${response.statusCode}");
+      print("BODY: ${response.data}");
 
       if (response.statusCode == 200 && response.data['error'] == false) {
-        final data = response.data['data'] as List<dynamic>;
-   
-         // Find recipe by ID
-      final recipeJson= data.firstWhere(
-        (item) => item['id'].toString() == id,
-        orElse: () => null,
-      );
-   _recipe = RecipeModel.fromJson(recipeJson as Map<String,dynamic>);
+        final recipeJson = response.data['data'];
+        _recipe = RecipeModel.fromJson(recipeJson);
         notifyListeners();
+        
       } else {
-        print("API returned an error: ${response.data}");
+        print("❗ API returned error: ${response.data}");
       }
     } catch (e) {
-      print("Fetch error: $e");
+      print("❗ Fetch error: $e");
     }
   }
 }

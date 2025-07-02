@@ -5,6 +5,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipe.dart';
 import 'package:taste_adda/view_models/user_view_model.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -14,6 +15,9 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+
+  
+
   @override
   Widget build(BuildContext context) {
     final recipeViewModel = Provider.of<RecipeViewModel>(
@@ -21,12 +25,21 @@ class _UserProfileState extends State<UserProfile> {
       listen: false,
     );
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    bool issubscribed = false;
     bool isexpanded = false;
     bool isoverflow = false;
+
+    
+
+
+
+
     return SafeArea(
       child: Scaffold(
         body: FutureBuilder<void>(
-          future: Future.wait([userViewModel.fetchUser(id: '1')]),
+          future: Future.wait([
+            userViewModel.fetchUser(userViewModel.user?.id ?? ''),
+          ]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -168,43 +181,46 @@ class _UserProfileState extends State<UserProfile> {
                           ],
                         ),
                         SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: FButton(
-                            style: FButtonStyle.secondary,
-                            onPress: () async {
-                              await OneSignal.Notifications.requestPermission(
-                                true,
-                              );
+                        // Padding(
+                        //   padding: const EdgeInsets.all(15.0),
+                        //   child: FButton(
+                        //     style: FButtonStyle.secondary,
+                        //     onPress: () async {
+                        //       await OneSignal.Notifications.requestPermission(
+                        //         true,
+                        //       );
 
-                              // Optionally tag user as subscribed
-                       await   OneSignal.User.addTagWithKey(
-                                "subscribed",
-                                "true",
-                              );
-                              showDialog(
-                                context: context,
-                                builder:
-                                    (context) => AlertDialog(
-                                      title: Text("Subscribed!"),
-                                      content: Text(
-                                        "Thanks for subscribing. Stay tuned!",
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed:
-                                              () => Navigator.of(context).pop(),
-                                          child: Text("OK"),
-                                        ),
-                                      ],
-                                    ),
-                              );
+                        //       // Optionally tag user as subscribed
+                        //       await OneSignal.User.addTagWithKey(
+                        //         "subscribed",
+                        //         "true",
+                        //       );
+                        //       showDialog(
+                        //         context: context,
+                        //         builder:
+                        //             (context) => AlertDialog(
+                        //               title: Text("Subscribed!"),
+                        //               content: Text(
+                        //                 "Thanks for subscribing. Stay tuned!",
+                        //               ),
+                        //               actions: [
+                        //                 TextButton(
+                        //                   onPressed:
+                        //                       () => Navigator.of(context).pop(),
+                        //                   child: Text("OK"),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //       );
+                        //       Navigator.of(
+                        //         context,
+                        //       ).pop(); // Close the profile page
 
-                              // Show a local push notification
-                            },
-                            child: const Text('Subscribe & Stay Tuned!'),
-                          ),
-                        ),
+                        //       // Show a local push notification
+                        //     },
+                        //     child: const Text('Subscribe & Stay Tuned!'),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
