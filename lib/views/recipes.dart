@@ -178,59 +178,59 @@ class _RecipesViewState extends State<RecipesView> {
                                 padding: EdgeInsets.zero,
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.zero,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    onPressed: () async {
-                                      showDialog(
-                                        context: context,
-                                        builder:
-                                            (context) => AlertDialog(
-                                              backgroundColor: Colors.black,
-                                              content: Text(
-                                                "Are you sure to delete this recipe?",
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                      ),
-                                                  child: const Text(
-                                                    "No",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    await recipesViewModel
-                                                        .deleteRecipe(
-                                                          recipe.id,
-                                                         signInViewModel
-                                                        );
-                                                    setState(() {
-                                                      recipes.removeAt(
-                                                        index,
-                                                      ); // Remove from UI list
-                                                    });
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text("Yes"),
-                                                ),
-                                              ],
-                                            ),
-                                      );
-                                    },
-                                    icon: Icon(Icons.delete),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: EdgeInsets.zero,
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       IconButton(
+                            //         onPressed: () async {
+                            //           showDialog(
+                            //             context: context,
+                            //             builder:
+                            //                 (context) => AlertDialog(
+                            //                   backgroundColor: Colors.black,
+                            //                   content: Text(
+                            //                     "Are you sure to delete this recipe?",
+                            //                   ),
+                            //                   actions: [
+                            //                     TextButton(
+                            //                       onPressed:
+                            //                           () => Navigator.pop(
+                            //                             context,
+                            //                           ),
+                            //                       child: const Text(
+                            //                         "No",
+                            //                         style: TextStyle(
+                            //                           color: Colors.white,
+                            //                         ),
+                            //                       ),
+                            //                     ),
+                            //                     TextButton(
+                            //                       onPressed: () async {
+                            //                         await recipesViewModel
+                            //                             .deleteRecipe(
+                            //                               recipe.id,
+                            //                              signInViewModel
+                            //                             );
+                            //                         setState(() {
+                            //                           recipes.removeAt(
+                            //                             index,
+                            //                           ); // Remove from UI list
+                            //                         });
+                            //                         Navigator.pop(context);
+                            //                       },
+                            //                       child: Text("Yes"),
+                            //                     ),
+                            //                   ],
+                            //                 ),
+                            //           );
+                            //         },
+                            //         icon: Icon(Icons.delete),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

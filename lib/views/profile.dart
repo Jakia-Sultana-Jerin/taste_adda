@@ -180,11 +180,11 @@ class _ProfileSettingState extends State<ProfilePage> {
                       !isNameChanged &&
                       !isPhoneChanged &&
                       !isCountryChanged &&
-                      !isDescriptionChanged &&
-                      uploadurl == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Nothing to update!')),
-                    );
+                      !isDescriptionChanged 
+                      ) {
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(content: Text('Nothing to update!')),
+                    // );
                     return;
                   }
 

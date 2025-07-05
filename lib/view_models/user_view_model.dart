@@ -10,8 +10,8 @@ class UserViewModel extends ChangeNotifier {
   late final Dio _dio;
   final _baseUrl =
       kIsWeb
-          ? 'https://dingo-proper-mistakenly.ngrok-free.app/'
-          : 'https://dingo-proper-mistakenly.ngrok-free.app/';
+          ? 'https://eclectic-melba-274878.netlify.app/'
+          : 'https://eclectic-melba-274878.netlify.app/';
 
   UserViewModel() {
     _dio = Dio(

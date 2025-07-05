@@ -5,7 +5,8 @@ import 'package:taste_adda/view_models/sign_in_view_model.dart';
 
 class RecipesViewModel extends ChangeNotifier {
   late final Dio _dio;
-  final baseUrl = kIsWeb ? 'https://dingo-proper-mistakenly.ngrok-free.app/' : 'https://dingo-proper-mistakenly.ngrok-free.app/';
+  final baseUrl = kIsWeb ? 'https://eclectic-melba-274878.netlify.app/' : 'https://eclectic-melba-274878.netlify.app/';
+
 
   List<RecipeModel> _recipes = [];
   Future<void>? _recipesFuture;

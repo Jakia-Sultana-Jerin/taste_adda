@@ -6,8 +6,8 @@ class RecipeViewModel extends ChangeNotifier {
   late final Dio _dio;
   final baseUrl =
       kIsWeb
-          ? 'https://dingo-proper-mistakenly.ngrok-free.app/'
-          : 'https://dingo-proper-mistakenly.ngrok-free.app/';
+          ? 'https://eclectic-melba-274878.netlify.app/'
+          : 'https://eclectic-melba-274878.netlify.app/';
 
   RecipeViewModel() {
     _dio = Dio(

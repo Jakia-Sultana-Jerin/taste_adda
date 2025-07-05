@@ -222,7 +222,7 @@ class _ProfileSettingState extends State<SettingPage> {
                                     signInViewModel.signOut(context);
                                     context.go('/');
                                   },
-                                  child: const Text('Sign Out'),
+                                  child:  Text('Sign Out'),
                                 ),
                               ],
                             );

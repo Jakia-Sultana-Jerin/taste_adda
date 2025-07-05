@@ -5,7 +5,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipe.dart';
 import 'package:taste_adda/view_models/user_view_model.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
