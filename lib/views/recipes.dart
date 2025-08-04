@@ -19,8 +19,11 @@ class _RecipesViewState extends State<RecipesView> {
   Widget build(BuildContext context) {
     final recipesViewModel = Provider.of<RecipesViewModel>(context);
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-   final signInViewModel = Provider.of<SignInViewModel>(context, listen: false);
-   // Get the existing SignInViewModel from the provider
+    final signInViewModel = Provider.of<SignInViewModel>(
+      context,
+      listen: false,
+    );
+    // Get the existing SignInViewModel from the provider
     final signInVM = context.read<SignInViewModel>();
     return SafeArea(
       child: Scaffold(
@@ -140,7 +143,17 @@ class _RecipesViewState extends State<RecipesView> {
                                   CircleAvatar(
                                     radius: 20,
                                     backgroundImage: NetworkImage(
-                                      userViewModel.user!.profilePicture,
+                                      recipe.Uploaderprofilepic.isNotEmpty
+                                          ? recipe.Uploaderprofilepic
+                                          : (userViewModel
+                                                      .user
+                                                      ?.profilePicture
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? userViewModel
+                                                  .user!
+                                                  .profilePicture
+                                              : 'https://via.placeholder.com/150'),
                                     ),
                                   ),
                                   const SizedBox(width: 9),

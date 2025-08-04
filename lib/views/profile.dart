@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:taste_adda/view_models/sign_in_view_model.dart';
 import 'package:taste_adda/view_models/user_view_model.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -82,10 +83,26 @@ class _ProfileSettingState extends State<ProfilePage> {
                       ),
                       child: GestureDetector(
                         onTap: () async {
+                          final signInViewModel = Provider.of<SignInViewModel>(
+                            context,
+                            listen: false,
+                          );
+                          final idToken = signInViewModel.idToken;
+
+                          if (idToken == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Not authenticated"),
+                              ),
+                            );
+                            return;
+                          }
+
                           final pickedFile = await pickImageFromGallery();
+
                           if (pickedFile != null) {
                             final url = await userViewModel
-                                .uploadProfilePicture(pickedFile);
+                                .uploadProfilePicture(pickedFile, idToken);
                             if (url != null) {
                               setState(() {
                                 uploadurl = url;
@@ -95,7 +112,7 @@ class _ProfileSettingState extends State<ProfilePage> {
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text(" Upload failed")),
+                                const SnackBar(content: Text("Upload failed")),
                               );
                             }
                           }
@@ -180,8 +197,8 @@ class _ProfileSettingState extends State<ProfilePage> {
                       !isNameChanged &&
                       !isPhoneChanged &&
                       !isCountryChanged &&
-                      !isDescriptionChanged 
-                      ) {
+                      !isDescriptionChanged &&
+                      uploadurl == null) {
                     // ScaffoldMessenger.of(context).showSnackBar(
                     //   const SnackBar(content: Text('Nothing to update!')),
                     // );

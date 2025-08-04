@@ -6,8 +6,8 @@ class RecipeViewModel extends ChangeNotifier {
   late final Dio _dio;
   final baseUrl =
       kIsWeb
-          ? 'https://eclectic-melba-274878.netlify.app/'
-          : 'https://eclectic-melba-274878.netlify.app/';
+          ? 'https://api-recipes-8.onrender.com/'
+          : 'https://api-recipes-8.onrender.com/';
 
   RecipeViewModel() {
     _dio = Dio(

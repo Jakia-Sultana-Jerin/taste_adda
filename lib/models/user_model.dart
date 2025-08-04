@@ -8,7 +8,7 @@ class UserModel {
   final String phoneNumber;
   final String country;
   final String profilePicture;
-   final String joined;
+  final String joined;
 
   UserModel({
     required this.id,

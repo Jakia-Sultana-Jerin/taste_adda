@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:taste_adda/view_models/recipe.dart';
 import 'package:taste_adda/view_models/user_view_model.dart';

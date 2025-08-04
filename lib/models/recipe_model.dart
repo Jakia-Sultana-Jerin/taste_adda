@@ -8,6 +8,7 @@ class RecipeModel {
   final Map<String, dynamic> ingredients;
   final List<String> steps;
   final String category;
+  final String Uploaderprofilepic;
   final List<ReviewModel> reviews;
 
   RecipeModel({
@@ -18,13 +19,13 @@ class RecipeModel {
     required this.ingredients,
     required this.steps,
     required this.category,
+    required this.Uploaderprofilepic,
     required this.reviews,
   });
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
     return RecipeModel(
-      
-    //  id: json['id']?.toString() ?? '',
+      //  id: json['id']?.toString() ?? '',
       id: json['id'] ?? json['_id'] ?? '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
@@ -32,6 +33,7 @@ class RecipeModel {
       ingredients: Map<String, String>.from(json['ingredients'] ?? {}),
       steps: List<String>.from(json['steps'] ?? []),
       category: json['category'] ?? '',
+      Uploaderprofilepic: json['Uploaderprofilepic'] ?? '',
       reviews:
           (json['reviews'] as List<dynamic>? ?? [])
               .map((review) => ReviewModel.fromJson(review))

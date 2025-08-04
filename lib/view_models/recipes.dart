@@ -5,7 +5,7 @@ import 'package:taste_adda/view_models/sign_in_view_model.dart';
 
 class RecipesViewModel extends ChangeNotifier {
   late final Dio _dio;
-  final baseUrl = kIsWeb ? 'https://eclectic-melba-274878.netlify.app/' : 'https://eclectic-melba-274878.netlify.app/';
+  final baseUrl = kIsWeb ? 'https://api-recipes-8.onrender.com/' : 'https://api-recipes-8.onrender.com/';
 
 
   List<RecipeModel> _recipes = [];
@@ -61,6 +61,7 @@ class RecipesViewModel extends ChangeNotifier {
   String category,
   SignInViewModel signInViewModel,
 
+
 ) async {
   final body = {
     'title': title,
@@ -69,6 +70,7 @@ class RecipesViewModel extends ChangeNotifier {
     'steps': steps,
     'ingredients': ingredients,
     'category': category,
+     // Use the passed profile picture or fallback
   };
 
   debugPrint('🔼 Sending: $body');

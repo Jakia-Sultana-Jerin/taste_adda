@@ -10,8 +10,8 @@ class UserViewModel extends ChangeNotifier {
   late final Dio _dio;
   final _baseUrl =
       kIsWeb
-          ? 'https://eclectic-melba-274878.netlify.app/'
-          : 'https://eclectic-melba-274878.netlify.app/';
+          ? 'https://api-recipes-8.onrender.com/'
+          : 'https://api-recipes-8.onrender.com/';
 
   UserViewModel() {
     _dio = Dio(
@@ -133,7 +133,7 @@ class UserViewModel extends ChangeNotifier {
 
 
 
-  Future<String?> uploadProfilePicture(File imageFile) async {
+  Future<String?> uploadProfilePicture(File imageFile,String idToken) async {
   try {
     String fileName = imageFile.path.split('/').last;
 
@@ -150,6 +150,7 @@ class UserViewModel extends ChangeNotifier {
       options: Options(
         headers: {
           'Content-Type': 'multipart/form-data',
+           'Authorization': 'Bearer $idToken'
         },
       ),
     );

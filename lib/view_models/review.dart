@@ -11,7 +11,7 @@ class ReviewViewModel extends ChangeNotifier {
   late Dio _dio;
   List<ReviewModel> _review = [];
 
-  final baseUrl = 'https://eclectic-melba-274878.netlify.app/';
+  final baseUrl = 'https://api-recipes-8.onrender.com/';
 
   ReviewViewModel() {
     _dio = Dio(
